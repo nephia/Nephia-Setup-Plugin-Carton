@@ -24,25 +24,14 @@ my $setup = Nephia::Setup->new(
 
 isa_ok $setup, 'Nephia::Setup';
 
-subtest create => sub {
-    no strict 'refs';
-    no warnings 'redefine';
-    local *{'Nephia::Setup::Action::CartonInstall'} = sub { print "Installing modules using cpanfile" };
-    use strict;
-    use warnings;
+my $plugin_loaded = 0;
+for my $action ($setup->action_chain) {
+    my $name = ref($action);
+    $plugin_loaded = 1 if $name eq 'Nephia::Setup::Action::CartonInstall';
+}
 
-    my($out, $err, @res) = capture {
-        $setup->do_task;
-    };
+ok $plugin_loaded == 1, 'Load plugins';
 
-    chomp(my $expect = join('',(<DATA>)));
-    if ($^O eq 'MSWin32') {
-        $expect =~ s/\//\\/g;
-    }
-    like $out, qr/^$expect/, 'setup step';
-};
+undef($guard);
 
 done_testing;
-
-__DATA__
-Installing modules using cpanfile
