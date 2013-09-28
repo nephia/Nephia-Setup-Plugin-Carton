@@ -42,9 +42,11 @@
       },
       "runtime" : {
          "requires" : {
+            "Carton" : "0",
             "File::Spec" : "0",
             "File::Which" : "0",
             "File::pushd" : "0",
+            "Nephia" : "0",
             "perl" : "5.008005"
          }
       },
